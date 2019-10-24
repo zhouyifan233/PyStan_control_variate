@@ -28,3 +28,6 @@ norm_dat = {
 sm = pystan.StanModel(model_code=norm_code)
 fit = sm.sampling(data=norm_dat, iter=1000)
 print(fit)
+
+# Calculate log-prob
+# fit.log_prob(fit.unconstrain_pars({'mu':10, 'sigma':2}))
