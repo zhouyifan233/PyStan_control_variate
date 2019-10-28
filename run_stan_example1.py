@@ -1,5 +1,6 @@
 import pystan
 import numpy as np
+from ControlVariate.control_variate import control_variate_linear_gaussian
 
 
 norm_code = """
@@ -18,16 +19,26 @@ model {
 }
 generated quantities {}
 """
+sm = pystan.StanModel(model_code=norm_code)
 
 norm_dat = {
-             'n': 50,
-             'y': np.random.normal(10, 2, 50),
+             'n': 500,
+             'y': np.random.normal(20, 5, 500),
             }
 
 #fit = pystan.stan(model_code=norm_code, data=norm_dat, iter=1000, chains=1)
-sm = pystan.StanModel(model_code=norm_code)
-fit = sm.sampling(data=norm_dat, chains=2, iter=3, verbose=True, init=[{'mu':0.1, 'sigma':0.1}, {'mu':5, 'sigma':5}])
-print(fit)
+fit = sm.sampling(data=norm_dat, chains=1, iter=100, verbose=True)
+print(fit.get_logposterior())
+
+#y = norm_dat['y']
+#print(np.mean(y))
+#print(np.var(y))
+yy = control_variate_linear_gaussian(fit, 'y')
+#print(np.mean(yy))
+#print(np.var(yy))
+norm_dat['y'] = np.squeeze(yy)
+fit = sm.sampling(data=norm_dat, chains=1, iter=100, verbose=True)
+print(fit.get_logposterior())
 
 # Calculate log-prob
 # fit.log_prob(fit.unconstrain_pars({'mu':10, 'sigma':2}))
