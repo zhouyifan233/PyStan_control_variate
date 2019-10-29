@@ -22,12 +22,13 @@ generated quantities {}
 sm = pystan.StanModel(model_code=norm_code)
 
 norm_dat = {
-             'n': 500,
-             'y': np.random.normal(20, 5, 500),
+             'n': 2000,
+             'y': np.random.normal(50, 10, 2000),
             }
 
 #fit = pystan.stan(model_code=norm_code, data=norm_dat, iter=1000, chains=1)
-fit = sm.sampling(data=norm_dat, chains=1, iter=100, verbose=True)
+fit = sm.sampling(data=norm_dat, chains=1, iter=50, verbose=True, init=[{'mu':5, 'sigma':1}])
+print(fit.get_posterior_mean())
 print(fit.get_logposterior())
 
 #y = norm_dat['y']
@@ -37,7 +38,8 @@ yy = control_variate_linear_gaussian(fit, 'y')
 #print(np.mean(yy))
 #print(np.var(yy))
 norm_dat['y'] = np.squeeze(yy)
-fit = sm.sampling(data=norm_dat, chains=1, iter=100, verbose=True)
+fit = sm.sampling(data=norm_dat, chains=1, iter=50, verbose=True, init=[{'mu':5, 'sigma':1}])
+print(fit.get_posterior_mean())
 print(fit.get_logposterior())
 
 # Calculate log-prob
