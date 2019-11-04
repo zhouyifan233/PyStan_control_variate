@@ -17,9 +17,9 @@ def grad_log_prob(y, mu, sigma):
         # so the inverse matrix can work
         sigma = sigma.reshape((1, 1))
     for y_ele in y:
-        log_prob.append(-np.linalg.inv(sigma)@np.expand_dims(y_ele-mu, axis=-1))
+        log_prob.extend([np.linalg.inv(sigma)@np.expand_dims(y_ele-mu, axis=-1)])
     log_prob = np.asarray(log_prob)
-    log_prob = np.squeeze(log_prob)
+    log_prob = np.squeeze(log_prob, axis=-1)
 
     return log_prob
 

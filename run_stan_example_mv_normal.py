@@ -6,16 +6,24 @@ from ControlVariate.control_variate import control_variate_linear
 norm_code = """
 data {
     int<lower=0> n;
-    real y[n];
+    vector[2] y[n];
 }
 transformed data {}
 parameters {
-    real mu;
-    real sigma;
+    vector[2] mu;
+    real Sigma_11;
+    real Sigma_22;
+    real Sigma_12;
 }
-transformed parameters {}
+transformed parameters {
+    matrix[2, 2] Sigma;
+    Sigma[1, 1] = Sigma_11;
+    Sigma[1, 2] = Sigma_12;
+    Sigma[2, 1] = Sigma_12;
+    Sigma[2, 2] = Sigma_22;
+}
 model {
-    y ~ normal(mu, sigma);
+    y ~ multi_normal(mu, Sigma);
 }
 generated quantities {}
 """
@@ -23,32 +31,28 @@ sm = pystan.StanModel(model_code=norm_code)
 
 norm_dat = {
              'n': 1000,
-             'y': np.random.normal(50, 10, 1000),
+             'y': np.random.multivariate_normal(np.asarray([100, 100]), np.diag([100, 100]), 1000),
             }
 
-#fit = pystan.stan(model_code=norm_code, data=norm_dat, iter=1000, chains=1)
-fit = sm.sampling(data=norm_dat, chains=1, iter=1000, verbose=True)
+fit = sm.sampling(data=norm_dat, chains=1, iter=300, verbose=False, init=[{'mu': np.asarray([20, 20]), 'Sigma_11': 25, 'Sigma_12': 0, 'Sigma_22': 25}])
 print(fit.get_posterior_mean())
 
 # Extract parameters
 parameter_extract = fit.extract()
 mu = parameter_extract['mu']
-sigma = parameter_extract['sigma']
+Sigma_11 = parameter_extract['Sigma_11']
+Sigma_22 = parameter_extract['Sigma_22']
+Sigma_12 = parameter_extract['Sigma_12']
 
 # Constraint mcmc samples
 mcmc_samples = []
 for i in range(len(mu)):
-    mcmc_samples.append([mu[i], sigma[i]])
+    mu_list = mu[i].tolist()
+    mu_list.extend([Sigma_11[i], Sigma_22[i], Sigma_12[i]])
+    mcmc_samples.append(mu_list)
 mcmc_samples = np.asarray(mcmc_samples)
 
-# Unconstraint mcmc samples. Not useful here.
-unconstrain_mcmc_samples = []
-for i in range(len(mu)):
-    unconstrain_mcmc_samples.append(fit.unconstrain_pars({'mu': mu[i], 'sigma': sigma[i]}))
-unconstrain_mcmc_samples = np.asarray(unconstrain_mcmc_samples)
-
 # Calculate gradients of the log-probability
-# In this case, it seems unconstraint and constraint parameters are the same.
 num_of_iter = mcmc_samples.shape[0]
 grad_log_prob_val = []
 for i in range(num_of_iter):
@@ -58,7 +62,5 @@ print(np.mean(grad_log_prob_val, axis=0))
 
 # Run control variates
 yy = control_variate_linear(mcmc_samples, grad_log_prob_val)
-
-
 
 
