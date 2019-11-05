@@ -28,7 +28,8 @@ def control_variate_quadratic(mcmc_samples, mcmc_gradients):
 
     dim_control = dim+dim+dim_cp
     z = -0.5 * mcmc_gradients
-    control = np.concatenate((z, (mcmc_samples*mcmc_gradients - 0.5)), axis=1)
+    # It is weid here: should I use +0.5 or -0.5 ?
+    control = np.concatenate((z, (mcmc_samples*mcmc_gradients + 0.5)), axis=1)
     control_parts = np.zeros((num_mcmc, dim_cp))
     for i in range(2, dim+1):
         for j in range(1, i):
