@@ -4,10 +4,12 @@ Implementation of control variate with pystan
 ## Requirements:
 Pystan >= 2.19
 
+Tested on Ubuntu 19.04, Python 3.7.5
+
 ## Example
 python run_stan_example_normal.py
 or
-other "run_stan_example_*.py" files
+other "run_stan_example_*.py" scripts
 
 ## Reference:
 
