@@ -9,6 +9,6 @@ python run_stan_example_normal.py
 or
 other "run_stan_example_*.py" files
 
-Reference:
+## Reference:
 
 Papamarkou, Theodore, Antonietta Mira, and Mark Girolami. "Zero variance differential geometric Markov chain Monte Carlo algorithms." Bayesian Analysis 9.1 (2014): 97-128.
