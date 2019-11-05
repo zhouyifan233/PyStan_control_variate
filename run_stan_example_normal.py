@@ -1,6 +1,7 @@
 import pystan
 import numpy as np
-from ControlVariate.control_variate import control_variate_linear
+from ControlVariate.control_variate import control_variate_linear, control_variate_quadratic
+from ControlVariate.plot_comparison import plot_comparison
 
 
 norm_code = """
@@ -22,12 +23,12 @@ generated quantities {}
 sm = pystan.StanModel(model_code=norm_code)
 
 norm_dat = {
-             'n': 1000,
-             'y': np.random.normal(50, 10, 1000),
+             'n': 5000,
+             'y': np.random.normal(50, 100, 5000),
             }
 
 #fit = pystan.stan(model_code=norm_code, data=norm_dat, iter=1000, chains=1)
-fit = sm.sampling(data=norm_dat, chains=1, iter=1000, verbose=True)
+fit = sm.sampling(data=norm_dat, chains=1, iter=200, verbose=True)
 print(fit.get_posterior_mean())
 
 # Extract parameters
@@ -57,8 +58,9 @@ grad_log_prob_val = np.asarray(grad_log_prob_val)
 print(np.mean(grad_log_prob_val, axis=0))
 
 # Run control variates
-yy = control_variate_linear(mcmc_samples, grad_log_prob_val)
+cv_linear_mcmc_samples = control_variate_linear(mcmc_samples, grad_log_prob_val)
+cv_quad_mcmc_samples = control_variate_quadratic(mcmc_samples, grad_log_prob_val)
 
-
+plot_comparison(mcmc_samples, cv_linear_mcmc_samples, cv_quad_mcmc_samples)
 
 

@@ -1,6 +1,6 @@
 import pystan
 import numpy as np
-from ControlVariate.control_variate import control_variate_linear
+from ControlVariate.control_variate import control_variate_linear, control_variate_qudratic
 
 
 norm_code = """
@@ -30,8 +30,8 @@ generated quantities {}
 sm = pystan.StanModel(model_code=norm_code)
 
 norm_dat = {
-             'n': 1000,
-             'y': np.random.multivariate_normal(np.asarray([100, 100]), np.diag([100, 100]), 1000),
+             'n': 10000,
+             'y': np.random.multivariate_normal(np.asarray([100, 100]), np.diag([100, 100]), 10000),
             }
 
 fit = sm.sampling(data=norm_dat, chains=1, iter=300, verbose=False, init=[{'mu': np.asarray([20, 20]), 'Sigma_11': 25, 'Sigma_12': 0, 'Sigma_22': 25}])
@@ -62,5 +62,5 @@ print(np.mean(grad_log_prob_val, axis=0))
 
 # Run control variates
 yy = control_variate_linear(mcmc_samples, grad_log_prob_val)
-
+yy = control_variate_qudratic(mcmc_samples, grad_log_prob_val)
 

@@ -2,7 +2,7 @@ import pystan
 import numpy as np
 import pandas as pd
 from CalculateGradLogProb.logitModel import grad_log_prob
-from ControlVariate.control_variate import control_variate_linear
+from ControlVariate.control_variate import control_variate_linear, control_variate_qudratic
 
 
 log_reg_code = """
@@ -42,7 +42,7 @@ log_reg_dat = {
              'weight': df.weight
             }
 
-fit = sm.sampling(data=log_reg_dat, iter=10000, chains=1)
+fit = sm.sampling(data=log_reg_dat, iter=200, chains=1)
 
 # Extract parameters
 parameter_extract = fit.extract()
@@ -81,3 +81,4 @@ print(np.mean(grad_log_prob_val_, axis=0))
 
 # Run control variates
 yy = control_variate_linear(mcmc_samples, grad_log_prob_val)
+yy = control_variate_qudratic(mcmc_samples, grad_log_prob_val)
