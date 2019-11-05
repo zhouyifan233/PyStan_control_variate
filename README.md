@@ -8,7 +8,9 @@ Tested on Ubuntu 19.04, Python 3.7.5
 
 ## Example
 python run_stan_example_normal.py
+
 or
+
 other "run_stan_example_*.py" scripts
 
 ## Reference:
