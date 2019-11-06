@@ -82,7 +82,7 @@ def run_example():
     # Run control variates
     cv_linear_mcmc_samples = control_variate_linear(mcmc_samples, grad_log_prob_val)
     cv_quad_mcmc_samples = control_variate_quadratic(mcmc_samples, grad_log_prob_val)
-    plot_comparison(mcmc_samples, cv_linear_mcmc_samples, cv_quad_mcmc_samples, fig_name='logit_2.png', fig_size=(8, 12))
+    plot_comparison(mcmc_samples, cv_linear_mcmc_samples, cv_quad_mcmc_samples, fig_name='logit_1.png', fig_size=(8, 12))
 
     return mcmc_samples, cv_linear_mcmc_samples, cv_quad_mcmc_samples
 
