@@ -6,14 +6,26 @@ Pystan >= 2.19
 
 Tested on Ubuntu 19.04, Python 3.7.5
 
-## Example
+## Examples
+Estimate mean and variance of a normal distribution:
+
 python run_stan_example_normal.py
 
-or other "run_stan_example_*.py" scripts
+Estimate mean and covariance of a (2D) multivariate normal distribution:
+
+python run_stan_example_mv_normal.py
+
+Estimate 3 parameters using logistic regression, data is from PyMc3 example:
+
+python run_stan_example_logistic_regression_1.py
+
+Estimate 5 parameters using logistic regression, see the experiment, "swiss banknote", in [2]:
+
+python run_stan_example_logistic_regression_2.py
 
 ## References:
 
-Mira, Antonietta, Reza Solgi, and Daniele Imparato. "Zero variance markov chain monte carlo for bayesian estimators." Statistics and Computing 23.5 (2013): 653-662.
+[1] Mira, Antonietta, Reza Solgi, and Daniele Imparato. "Zero variance markov chain monte carlo for bayesian estimators." Statistics and Computing 23.5 (2013): 653-662.
 
-Papamarkou, Theodore, Antonietta Mira, and Mark Girolami. "Zero variance differential geometric Markov chain Monte Carlo algorithms." Bayesian Analysis 9.1 (2014): 97-128.
+[2] Papamarkou, Theodore, Antonietta Mira, and Mark Girolami. "Zero variance differential geometric Markov chain Monte Carlo algorithms." Bayesian Analysis 9.1 (2014): 97-128.
 
