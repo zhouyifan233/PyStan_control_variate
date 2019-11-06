@@ -3,6 +3,7 @@ import numpy as np
 from ControlVariate.control_variate import control_variate_linear, control_variate_quadratic
 from ControlVariate.plot_comparison import plot_comparison
 
+
 def run_example():
     norm_code = """
     data {
@@ -23,8 +24,8 @@ def run_example():
     sm = pystan.StanModel(model_code=norm_code)
 
     norm_dat = {
-                 'n': 5000,
-                 'y': np.random.normal(50, 100, 5000),
+                 'n': 500,
+                 'y': np.random.normal(50, 100, 500),
                 }
 
     #fit = pystan.stan(model_code=norm_code, data=norm_dat, iter=1000, chains=1)
@@ -58,8 +59,10 @@ def run_example():
     # Run control variates
     cv_linear_mcmc_samples = control_variate_linear(mcmc_samples, grad_log_prob_val)
     cv_quad_mcmc_samples = control_variate_quadratic(mcmc_samples, grad_log_prob_val)
-    plot_comparison(mcmc_samples, cv_linear_mcmc_samples, cv_quad_mcmc_samples, fig_name='normal.png', fig_size=(8, 8))
+    plot_comparison(mcmc_samples, cv_linear_mcmc_samples, cv_quad_mcmc_samples, fig_name='normal_1.png', fig_size=(8, 8))
+
+    return mcmc_samples, cv_linear_mcmc_samples, cv_quad_mcmc_samples
 
 
 if __name__ == "__main__":
-    run_example()
+    mcmc_samples, cv_linear_mcmc_samples, cv_quad_mcmc_samples = run_example()

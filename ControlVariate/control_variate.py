@@ -8,9 +8,9 @@ def control_variate_linear(mcmc_samples, mcmc_gradients):
 
     sc_matrix = np.concatenate((mcmc_samples, control), axis=1)
     sc_cov = np.cov(sc_matrix.T)
-    Sigma_cs = sc_cov[0:dim, dim:dim * 2]
+    Sigma_cs = sc_cov[0:dim, dim:dim * 2].T
     Sigma_cc = sc_cov[dim:dim*2, dim:dim*2]
-    zv = Sigma_cs @ -np.linalg.inv(Sigma_cc) @ control.T
+    zv = (-np.linalg.inv(Sigma_cc) @ Sigma_cs).T @ control.T
     new_mcmc_samples = mcmc_samples + zv.T
 
     print('new_mcmc_samples variance: ')
@@ -29,7 +29,7 @@ def control_variate_quadratic(mcmc_samples, mcmc_gradients):
     dim_control = dim+dim+dim_cp
     z = -0.5 * mcmc_gradients
     # It is weid here: should I use +0.5 or -0.5 ?
-    control = np.concatenate((z, (mcmc_samples*mcmc_gradients + 0.5)), axis=1)
+    control = np.concatenate((z, (mcmc_samples*mcmc_gradients - 0.5)), axis=1)
     control_parts = np.zeros((num_mcmc, dim_cp))
     for i in range(2, dim+1):
         for j in range(1, i):
@@ -38,10 +38,10 @@ def control_variate_quadratic(mcmc_samples, mcmc_gradients):
     control = np.concatenate((control, control_parts), axis=1)
     sc_matrix = np.concatenate((mcmc_samples.T, control.T), axis=0)
     sc_cov = np.cov(sc_matrix)
-    Sigma_cs = sc_cov[0:dim, dim:dim+dim_control]
+    Sigma_cs = sc_cov[0:dim, dim:dim+dim_control].T
     Sigma_cc = sc_cov[dim:dim+dim_control, dim:dim+dim_control]
 
-    zv = Sigma_cs @ -np.linalg.inv(Sigma_cc) @ control.T
+    zv = (-np.linalg.inv(Sigma_cc) @ Sigma_cs).T @ control.T
     new_mcmc_samples = mcmc_samples + zv.T
 
     print('new_mcmc_samples variance: ')

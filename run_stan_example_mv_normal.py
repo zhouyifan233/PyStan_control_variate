@@ -65,6 +65,8 @@ def run_example():
     cv_quad_mcmc_samples = control_variate_quadratic(mcmc_samples, grad_log_prob_val)
     plot_comparison(mcmc_samples, cv_linear_mcmc_samples, cv_quad_mcmc_samples, fig_name='mv_normal.png', fig_size=(8, 24))
 
+    return mcmc_samples, cv_linear_mcmc_samples, cv_quad_mcmc_samples
+
 
 if __name__ == "__main__":
-    run_example()
+    mcmc_samples, cv_linear_mcmc_samples, cv_quad_mcmc_samples = run_example()
