@@ -7,19 +7,19 @@ Pystan >= 2.19
 Tested on Ubuntu 19.04, Python 3.7.5
 
 ## Examples
-Estimate mean and variance of a normal distribution:
+1. Estimate mean and variance of a normal distribution:
 
 python run_stan_example_normal.py
 
-Estimate mean and covariance of a (2D) multivariate normal distribution:
+2. Estimate mean and covariance of a (2D) multivariate normal distribution:
 
 python run_stan_example_mv_normal.py
 
-Estimate 3 parameters using logistic regression, data is from PyMc3 example:
+3. Estimate 3 parameters using logistic regression, data is from PyMc3 example:
 
 python run_stan_example_logistic_regression_1.py
 
-Estimate 5 parameters using logistic regression, see the experiment, "swiss banknote", in [2]:
+4. Estimate 5 parameters using logistic regression, see the experiment, "swiss banknote", in [2]:
 
 python run_stan_example_logistic_regression_2.py
 
