@@ -1,5 +1,5 @@
 import numpy as np
-from BasicFunction.Gaussian_log_prob import grad_log_prob
+from PyStan_control_variate.BasicFunction.Gaussian_log_prob import grad_log_prob
 
 
 def control_variate_linear(mcmc_samples, mcmc_gradients):
