@@ -1,5 +1,5 @@
 import numpy as np
-from PyStan_control_variate.BasicFunction.Gaussian_log_prob import grad_log_prob
+from BasicFunction.Gaussian_log_prob import grad_log_prob
 
 
 def control_variate_linear(mcmc_samples, mcmc_gradients):
@@ -13,7 +13,7 @@ def control_variate_linear(mcmc_samples, mcmc_gradients):
     zv = (-np.linalg.inv(Sigma_cc) @ Sigma_cs).T @ control.T
     new_mcmc_samples = mcmc_samples + zv.T
 
-    print('new_mcmc_samples variance: ')
+    print('new_mcmc_samples (linear control variates) variance: ')
     print(np.var(new_mcmc_samples, axis=0))
     print('old_mcmc_samples variance:')
     print(np.var(mcmc_samples, axis=0))
@@ -29,12 +29,12 @@ def control_variate_quadratic(mcmc_samples, mcmc_gradients):
     dim_control = dim+dim+dim_cp
     z = -0.5 * mcmc_gradients
     # It is weid here: should I use +0.5 or -0.5 ?
-    control = np.concatenate((z, (mcmc_samples*mcmc_gradients - 0.5)), axis=1)
+    control = np.concatenate((z, (mcmc_samples*z - 0.5)), axis=1)
     control_parts = np.zeros((num_mcmc, dim_cp))
     for i in range(2, dim+1):
         for j in range(1, i):
             ind = int(0.5*(2*dim-j)*(j-1) + (i-j))
-            control_parts[:,ind-1] = mcmc_samples[:,i-1]*mcmc_gradients[:,j-1] + mcmc_samples[:,j-1]*mcmc_gradients[:,i-1]
+            control_parts[:,ind-1] = mcmc_samples[:,i-1]*z[:,j-1] + mcmc_samples[:,j-1]*z[:,i-1]
     control = np.concatenate((control, control_parts), axis=1)
     sc_matrix = np.concatenate((mcmc_samples.T, control.T), axis=0)
     sc_cov = np.cov(sc_matrix)
@@ -44,7 +44,7 @@ def control_variate_quadratic(mcmc_samples, mcmc_gradients):
     zv = (-np.linalg.inv(Sigma_cc) @ Sigma_cs).T @ control.T
     new_mcmc_samples = mcmc_samples + zv.T
 
-    print('new_mcmc_samples variance: ')
+    print('new_mcmc_samples (quadratic control variates) variance: ')
     print(np.var(new_mcmc_samples, axis=0))
     print('old_mcmc_samples variance:')
     print(np.var(mcmc_samples, axis=0))
