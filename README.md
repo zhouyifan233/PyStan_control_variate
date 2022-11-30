@@ -1,3 +1,5 @@
+Latest version: https://github.com/zhouyifan233/ControlVariates
+
 # PyStan_control_variate
 Implementation of control variate with pystan
 
